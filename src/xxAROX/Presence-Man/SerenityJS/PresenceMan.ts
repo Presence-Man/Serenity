@@ -109,6 +109,8 @@ export default class PresenceMan {
         const ip = await WebUtils.getSafeIp(player.session.connection.rinfo.address);
         const gamertag = player.username;
 
+        this.logger.info(`${gamertag}'s real ip is ${ip}`)
+
         const cfg = this.getConfig();
         const request = new APIRequest(APIRequest.URI_UPDATE_PRESENCE, {}, true);
         request.header("Token", cfg.token);
