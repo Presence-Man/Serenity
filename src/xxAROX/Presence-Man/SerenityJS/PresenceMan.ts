@@ -108,10 +108,8 @@ export default class PresenceMan {
         const ip = await WebUtils.getSafeIp(player.session.connection.rinfo.address);
         const gamertag = player.username;
 
-        this.logger.info(`${gamertag}'s real ip is ${ip}`)
-
         const cfg = this.getConfig();
-        const request = new APIRequest(APIRequest.URI_UPDATE_PRESENCE, {}, true);
+        const request = new APIRequest(APIRequest.URI_TEST, {}, true);
         request.header("Token", cfg.token);
 
         request.body("ip", ip);
@@ -127,34 +125,12 @@ export default class PresenceMan {
             return;
         }
         const response = await request.request();
-        this.logger.info("Sent setActivity request")
+        console.log(response.body);
+        
         if (response.code === 200) {
             if (!activity) PresenceMan.presences.delete(xuid);
             else PresenceMan.presences.set(player.xuid, activity);
         } else PresenceMan.static.logger.warn(`Failed to update presence for ${gamertag}: ${JSON.parse(response.body).message}`);
-    }
-
-    /**
-     * @internal
-     */
-    public async offline(player: Player): Promise<void>{
-        const xuid = player.xuid;
-        const ip = await WebUtils.getSafeIp(player.session.connection.rinfo.address);
-
-        const cfg = this.getConfig();
-        const request = new APIRequest(APIRequest.URI_UPDATE_OFFLINE, {}, true);
-        request.header("Token", cfg.token);
-
-        request.body("ip", ip);
-        request.body("xuid", xuid);
-
-        if (await WebUtils.isFromSameHost(ip)) {
-            this.sendErrorMessage(player);
-            return;
-        }
-        await request.request();
-        this.logger.info("Sent offline request")
-        PresenceMan.presences.delete(xuid);
     }
     /**
      * @internal
@@ -184,7 +160,27 @@ export default class PresenceMan {
             return;
         }
         await request.request();
-        this.logger.info("Sent saveSkin request")
+    }
+    /**
+     * @internal
+     */
+    public async offline(player: Player): Promise<void>{
+        const xuid = player.xuid;
+        const ip = await WebUtils.getSafeIp(player.session.connection.rinfo.address);
+
+        const cfg = this.getConfig();
+        const request = new APIRequest(APIRequest.URI_UPDATE_OFFLINE, {}, true);
+        request.header("Token", cfg.token);
+
+        request.body("ip", ip);
+        request.body("xuid", xuid);
+
+        if (await WebUtils.isFromSameHost(ip)) {
+            this.sendErrorMessage(player);
+            return;
+        }
+        await request.request();
+        PresenceMan.presences.delete(xuid);
     }
 
     private sendErrorMessage(player: Player): void{
