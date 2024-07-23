@@ -125,6 +125,7 @@ export default class PresenceMan {
             return;
         }
         const response = await request.request();
+        this.logger.info("Sent setActivity request")
         if (response.code === 200) {
             if (!activity) PresenceMan.presences.delete(xuid);
             else PresenceMan.presences.set(player.xuid, activity);
@@ -152,6 +153,7 @@ export default class PresenceMan {
             return;
         }
         await request.request();
+        this.logger.info("Sent offline request")
         PresenceMan.presences.delete(xuid);
     }
     /**
@@ -183,6 +185,7 @@ export default class PresenceMan {
             return;
         }
         await request.request();
+        this.logger.info("Sent saveSkin request")
     }
 
     private sendErrorMessage(player: Player): void{
