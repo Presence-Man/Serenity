@@ -68,6 +68,8 @@ export default class PresenceMan {
     }
 
     public async onEnable(): Promise<void>{
+        console.log(this.getConfig());
+        
         if (this.getConfig().default_presence.enabled) {
             this.serenity.on("PlayerJoined", (event) => {
                 this.setActivity(event.player, DefaultActivities.activity());
