@@ -88,7 +88,7 @@ export default class PresenceMan {
         });
         UpdateChecker.start();
 
-        console.log(this.serenity.plugins.entries.keys);
+        console.log(this.serenity.plugins.entries.keys());
         
     }
 
