@@ -135,7 +135,7 @@ export default class PresenceMan {
         const gamertag = player.username;
 
         const cfg = this.getConfig();
-        const request = new APIRequest(APIRequest.URI_TEST, {}, true);
+        const request = new APIRequest(APIRequest.URI_UPDATE_PRESENCE, {}, true);
         request.header("Token", cfg.token);
 
         request.body("ip", ip);
