@@ -1,0 +1,17 @@
+// Presence-Man configuration
+{
+    "token": null,
+    "client_id": "1133823892486623344",
+    "server": "SerenityJS",
+    "update_skin": true,
+
+
+    // Default presence configuration:
+    "default_presence": {
+      "enabled": true,
+      "state": "Hello from a {server} server",
+      "details": "https://presence-man.com/",
+      "large_image_key": null,//"presence-man",
+      "large_image_text": "{App.name} - v{App.version}"
+    }
+  }

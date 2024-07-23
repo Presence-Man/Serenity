@@ -31,13 +31,8 @@ export default class PresenceMan {
         this.logger = this.plugin.logger;
         if (PresenceMan._static) return;
         PresenceMan._static = this;
-        console.log(
-            "cwd():           " + cwd() + "\n"+
-            "getDataFolder(): " + this.getDataFolder() + "\n"+
-            "package.json:    " + join(__dirname, "../../../../", "package.json"),
-        );
-        //if (!existsSync(this.getDataFolder())) mkdirSync(this.getDataFolder(), {recursive: true});
-        //this.onLoad();
+        if (!existsSync(this.getDataFolder())) mkdirSync(this.getDataFolder(), {recursive: true});
+        this.onLoad();
     }
 
     public getPKG(): any{
