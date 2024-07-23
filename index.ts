@@ -20,7 +20,9 @@ function getHeadURL(xuid: string, gray: boolean = false, size: number = 64): str
 async function setActivity(player: Player, activity: APIActivity): Promise<void>{
     await PresenceMan.static.setActivity(player, activity);
 }
-
+async function clearActivity(player: Player): Promise<void>{
+    await PresenceMan.static.clearActivity(player);
+}
 // NOTE This is the API that developers can work with:
 export {
     APIActivity,
@@ -29,5 +31,6 @@ export {
 
     getSkinURL,
     getHeadURL,
-    setActivity
+    setActivity,
+    clearActivity
 };

@@ -13,6 +13,7 @@ import { APIActivity, DefaultActivities } from "./entity/APIActivity";
 import { UpdateChecker } from "./tasks/UpdateChecker";
 import { APIRequest } from "./entity/APIRequest";
 import { SkinUtils, WebUtils } from "./utils";
+import { ActivityType } from "./entity/ActivityType";
 //#endregion
 
 export default class PresenceMan {
@@ -87,9 +88,6 @@ export default class PresenceMan {
             this.offline(player)
         });
         UpdateChecker.start();
-
-        console.log(this.serenity.plugins.entries.get("Presence-Man")?.module);
-        
     }
 
     public onDisable(): void{

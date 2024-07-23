@@ -1,12 +1,12 @@
 {
     "name": "Presence-Man",
     "version": "0.1.0",
-    "mode": "development",
-    "color": "blue",
-    "entry": ".dist/index.js",
-    "node": true,
+    "mode": "production",
     "authors": [
         "xxAROX"
     ],
+    "color": "blue",
+    "entry": ".dist/index.js",
+    "node": true,
     "typescript": true
 }

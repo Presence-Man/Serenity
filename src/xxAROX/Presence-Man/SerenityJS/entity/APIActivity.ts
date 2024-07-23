@@ -19,8 +19,8 @@ export class APIActivity {
 	party_player_count: number | null;
 
 	constructor(
-		type: ActivityType,
-		client_id: null|string,
+		type?: ActivityType,
+		client_id?: null|string,
 		state?: null|string,
 		details?: null|string,
 		end?: null|number,
@@ -29,7 +29,7 @@ export class APIActivity {
 		party_max_player_count?: null|number,
 		party_player_count?: null|number,
 	) {
-		this.type = type;
+		this.type = type || ActivityType.PLAYING;
 		this.state = state || null;
 		this.details = details || null;
 		this.end = end || null;
