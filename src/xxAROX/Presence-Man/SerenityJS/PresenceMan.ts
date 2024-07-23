@@ -119,12 +119,8 @@ export default class PresenceMan {
         request.body("server", cfg.server);
         activity!.client_id = cfg.client_id;
         request.body("api_activity", activity?.serialize());
-        
 
-        if (await WebUtils.isFromSameHost(ip)) {
-            player.sendMessage("§cYou are trying to use Presence-Man on a local server")
-            return;
-        }
+        if (await WebUtils.isFromSameHost(ip)) return;
         const response = await request.request();
         if (response.code === 200) {
             if (!activity) PresenceMan.presences.delete(xuid);
