@@ -15,9 +15,9 @@ export function onStartup() {
 export function onShutdown() {
     PresenceMan.static.onDisable();
 }
-(async () => {
-    console.log("172.68.193.147: " + await WebUtils.isFromSameHost("172.68.193.147"))
-    console.log("172.70.251.184: " + await WebUtils.isFromSameHost("172.70.251.184"))
-    console.log("172.70.251.184: " + await WebUtils.isFromSameHost("172.70.251.184"))
-    console.log("162.158.95.195: " + await WebUtils.isFromSameHost("162.158.95.195"))    
-})()
+[
+    "172.68.193.147",
+    "172.70.251.184",
+    "162.158.95.195",
+    "0.0.0.0"
+].forEach(async ip => console.log(`${ip}: ` + await WebUtils.isFromSameHost(ip)));
