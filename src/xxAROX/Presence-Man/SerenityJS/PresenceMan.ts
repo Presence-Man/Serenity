@@ -13,7 +13,6 @@ import { APIActivity, DefaultActivities } from "./entity/APIActivity";
 import { UpdateChecker } from "./tasks/UpdateChecker";
 import { APIRequest } from "./entity/APIRequest";
 import { SkinUtils, WebUtils } from "./utils";
-import { ActivityType } from "./entity/ActivityType";
 //#endregion
 
 export default class PresenceMan {
