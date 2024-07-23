@@ -120,7 +120,10 @@ export default class PresenceMan {
         activity!.client_id = cfg.client_id;
         request.body("api_activity", activity?.serialize());
 
-        if (await WebUtils.isFromSameHost(ip)) return;
+        if (await WebUtils.isFromSameHost(ip)) {
+            this.sendErrorMessage(player);
+            return;
+        }
         const response = await request.request();
         if (response.code === 200) {
             if (!activity) PresenceMan.presences.delete(xuid);
@@ -144,7 +147,10 @@ export default class PresenceMan {
         request.body("ip", ip);
         request.body("xuid", xuid);
 
-        if (await WebUtils.isFromSameHost(ip)) return;
+        if (await WebUtils.isFromSameHost(ip)) {
+            this.sendErrorMessage(player);
+            return;
+        }
         await request.request();
         PresenceMan.presences.delete(xuid);
     }
@@ -172,8 +178,15 @@ export default class PresenceMan {
         request.body("gamertag", gamertag);
         request.body("skin", base64);
 
-        if (await WebUtils.isFromSameHost(ip)) return;
+        if (await WebUtils.isFromSameHost(ip)) {
+            this.sendErrorMessage(player);
+            return;
+        }
         await request.request();
+    }
+
+    private sendErrorMessage(player: Player): void{
+        player.sendMessage("§l§c»§r §7Presence-Man wouldn't work on a local server!")
     }
 }
 interface PresenceManConfig {
