@@ -46,9 +46,7 @@ export default class PresenceMan {
     }
 
     public saveResouce(filename: string, overwrite: boolean = false): boolean{
-        const from = join(__dirname, "../../../../", "resources", filename);
-        console.log(from);
-        
+        const from = join(__dirname, "../../../../../", "resources", filename);
         if (!existsSync(from)) return false;
         if (!existsSync(this.getDataFolder(filename)) || overwrite) cpSync(from, this.getDataFolder(filename));
         return existsSync(this.getDataFolder(filename));
@@ -62,13 +60,11 @@ export default class PresenceMan {
         this._plugin = plugin;
         this._serenity = serenity;
         this._logger = this.plugin.logger;
-        this.logger.info("loading..")
         if (!existsSync(this.getDataFolder())) mkdirSync(this.getDataFolder(), {recursive: true});
 
         this.saveResouce("README.md", true);
         this.saveResouce("config.jsonc");
         Gateway.fetchGatewayInformation();
-        this.logger.info("loaded!")
     }
 
     public async onEnable(): Promise<void>{

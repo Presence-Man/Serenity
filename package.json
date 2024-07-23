@@ -1,23 +1,22 @@
 {
-  "name": "@presence.man/serenity",
-  "version": "1.0.0",
-  "description": "",
+  "name": "@presence-man/serenity",
+  "description": "@SerenityJS client plugin for @Presence-Man",
+  "author": "xxAROX",
+  "license": "AGPL-3.0-only",
+  "keywords": [],
   "main": "./.dist/index.js",
+
   "scripts": {
     "watch": "tsc -w",
     "build": "tsc"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "json5": "^2.2.3",
     "semver": "^7.6.3",
     "sharp": "^0.33.4"
   },
   "devDependencies": {
-    "@serenityjs/serenity": "^0.4.0",
-    "@serenityjs/typescript-config": "*",
+    "@serenityjs/serenity": "",
     "@types/node": "^20.14.11",
     "@types/semver": "^7.5.8"
   }
