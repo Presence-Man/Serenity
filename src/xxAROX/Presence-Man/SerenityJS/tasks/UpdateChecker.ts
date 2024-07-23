@@ -27,7 +27,7 @@ export class UpdateChecker {
         try {
             const body = (await WebUtils.get(UpdateChecker.LATEST_VERSION_URL)).body.trim();
             const latest = JSON.parse(body).version;
-            const needUpdate = semver.gt(latest, PresenceMan.static.getPKG().version);
+            const needUpdate = semver.gt(latest, PresenceMan.static.plugin.config.version);
             if (needUpdate) {
                 PresenceMan.static.logger.info("Your version of Presence-Man is out of date. To avoid issues please update it to the latest version!");
                 PresenceMan.static.logger.info("Download: " + Gateway.getUrl() + "/downloads/bdsx");

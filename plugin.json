@@ -5,5 +5,8 @@
     "color": "blue",
     "entry": ".dist/index.js",
     "node": true,
+    "authors": [
+        "xxAROX"
+    ],
     "typescript": true
 }

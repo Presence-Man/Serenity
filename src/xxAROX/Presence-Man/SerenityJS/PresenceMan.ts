@@ -35,10 +35,6 @@ export default class PresenceMan {
         this.onLoad();
     }
 
-    public getPKG(): any{
-        return JSON.parse(readFileSync(join(__dirname, "../../../../", "package.json")).toString());
-    }
-
     public getDataFolder(...args: string[]): string{
         return join(cwd(), "plugin_data", "Presence-Man", ...args);
     }
