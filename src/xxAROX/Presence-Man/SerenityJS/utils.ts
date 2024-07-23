@@ -79,10 +79,7 @@ export namespace WebUtils {
 
 	export function isFromSameHost(ip: string): Promise<boolean> {
 		return new Promise((resolve) => {
-			lookup(ip, {
-				all: true,
-				family: "IPv4"
-			}, (err, addresses) => {
+			lookup(ip, { all: true, family: "IPv4" }, (err, addresses) => {
 				if (err) {
 					resolve(false);
 					return;
@@ -95,7 +92,7 @@ export namespace WebUtils {
 					|| parts[0] === '10'
 					// @ts-ignore
 					|| (parts[0] === '172' && (parseInt(parts[1], 10) >= 16 && parseInt(parts[1], 10) <= 31))
-					|| (parts[0] === '192' && parts[1] === '168' && (parseInt(parts[1], 10) >= 16 && parseInt(parts[1], 10) <= 31))
+					|| (parts[0] === '192' && parts[1] === '168')
 				;
 				resolve(isLocalAddress);
 			});
@@ -105,7 +102,7 @@ export namespace WebUtils {
 
 export namespace SkinUtils {
 	export function convertSkinToBase64File(skin: SerializedSkin): Promise<string | null> {
-        return new Promise(async (resolve, reject) => {
+        return new Promise(async (resolve) => {
 			if (skin.isPersona) {
                 resolve(null);
                 return;

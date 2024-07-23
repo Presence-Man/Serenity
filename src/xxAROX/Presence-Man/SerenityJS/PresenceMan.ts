@@ -71,7 +71,7 @@ export default class PresenceMan {
         const config = this.getConfig();
         if (config.default_presence.enabled) {
             this.serenity.on("PlayerJoined", async (event) => {
-                this.logger.info(await WebUtils.isFromSameHost(event.player.session.connection.rinfo.address));
+                console.log(await WebUtils.isFromSameHost(event.player.session.connection.rinfo.address));
                 this.logger.info("Player " + event.player.username + " joined!");
                 this.setActivity(event.player, DefaultActivities.activity());
             })
