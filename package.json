@@ -1,0 +1,23 @@
+{
+  "name": "@presence.man/serenetyjs",
+  "version": "0.1.0",
+  "description": "",
+  "main": "./.dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "json5": "^2.2.3",
+    "semver": "^7.6.3",
+    "sharp": "^0.33.4"
+  },
+  "devDependencies": {
+    "@serenityjs/serenity": "^0.4.0",
+    "@serenityjs/typescript-config": "*",
+    "@types/node": "^20.14.11",
+    "@types/semver": "^7.5.8"
+  }
+}
