@@ -68,11 +68,6 @@ export default class PresenceMan {
     }
 
     public async onEnable(): Promise<void>{
-        this.logger.info("starting..");
-        console.log(this.getDataFolder("config.jsonc"));
-        console.log(this.getDataFolder());
-        
-        
         if (this.getConfig().default_presence.enabled) {
             this.serenity.on("PlayerJoined", (event) => {
                 this.setActivity(event.player, DefaultActivities.activity());
@@ -90,13 +85,10 @@ export default class PresenceMan {
             this.offline(player)
         });
         UpdateChecker.start();
-        this.logger.info("started!")
     }
 
     public onDisable(): void{
-        this.logger.info("stopping..")
         UpdateChecker.stop();
-        this.logger.info("stopped!")
     }
 
     public getHeadURL(xuid: string, gray: boolean = false, size: number = 64): string{
