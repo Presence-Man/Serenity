@@ -88,13 +88,14 @@ export namespace WebUtils {
 					return;
 				}
 				if (!addresses[0]) return;
-				const address = addresses[0].address;
-				const isLocalAddress =
-					address === '127.0.0.1' || // loopback
-					address === '::1' || // IPv6 loopback
-					address.startsWith('192.168.') || // private IPv4 range
-					address.startsWith('10.') || // private IPv4 range
-					address.startsWith('172.') && (Number(address.split('.')[1]) >= 16 && Number(address.split('.')[1]) <= 31) // private IPv4 range
+				const ip = addresses[0].address;
+				var parts = ip.split('.');
+				const isLocalAddress = parts[0] === "127"
+					|| parts[0] === "0"
+					|| parts[0] === '10'
+					// @ts-ignore
+					|| (parts[0] === '172' && (parseInt(parts[1], 10) >= 16 && parseInt(parts[1], 10) <= 31))
+					|| (parts[0] === '192' && parts[1] === '168' && (parseInt(parts[1], 10) >= 16 && parseInt(parts[1], 10) <= 31))
 				;
 				resolve(isLocalAddress);
 			});
