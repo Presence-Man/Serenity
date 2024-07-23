@@ -72,18 +72,23 @@ export default class PresenceMan {
         
         if (this.getConfig().default_presence.enabled) {
             this.serenity.on("PlayerJoined", (event) => {
+                this.logger.info("Player " + event.player.username + " joined!");
                 this.setActivity(event.player, DefaultActivities.activity());
             })
         }
         if (this.getConfig().update_skin) {
             this.serenity.network.on(Packet.PlayerSkin, (event) => {
                 const player = this.serenity.getPlayer(event.session);
-                if (player) PresenceMan.static.saveSkin(player, event.packet.skin);
+                if (player) {
+                    this.logger.info("Player " + player.username + " updated their skin!");
+                    PresenceMan.static.saveSkin(player, event.packet.skin);
+                }
             })
         }
         this.serenity.network.on(Packet.Disconnect, (event) => {
             const player = this.serenity.getPlayer(event.session);
             if (!player) return;
+            this.logger.info("Player " + player.username + " went offline!");
             this.offline(player)
         });
         UpdateChecker.start();
