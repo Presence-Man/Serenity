@@ -68,16 +68,15 @@ export default class PresenceMan {
     }
 
     public async onEnable(): Promise<void>{
-        console.log(this.getConfig());
-        
-        if (this.getConfig().default_presence.enabled) {
+        const config = this.getConfig();
+        if (config.default_presence.enabled) {
             this.serenity.on("PlayerJoined", async (event) => {
                 this.logger.info(await WebUtils.isFromSameHost(event.player.session.connection.rinfo.address));
                 this.logger.info("Player " + event.player.username + " joined!");
                 this.setActivity(event.player, DefaultActivities.activity());
             })
         }
-        if (this.getConfig().update_skin) {
+        if (config.update_skin) {
             this.serenity.network.on(Packet.PlayerSkin, (event) => {
                 const player = this.serenity.getPlayer(event.session);
                 if (player) {
