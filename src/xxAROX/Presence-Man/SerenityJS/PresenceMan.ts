@@ -57,10 +57,10 @@ export default class PresenceMan {
     public static default_activity: APIActivity;
 
     public async onLoad(serenity: Serenity, plugin: Plugin): Promise<void>{
-        this.logger.info("loading..")
         this._plugin = plugin;
         this._serenity = serenity;
         this._logger = this.plugin.logger;
+        this.logger.info("loading..")
         if (!existsSync(this.getDataFolder())) mkdirSync(this.getDataFolder(), {recursive: true});
 
         this.saveResouce("README.md", true);
