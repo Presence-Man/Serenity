@@ -119,6 +119,8 @@ export default class PresenceMan {
         request.body("server", cfg.server);
         activity!.client_id = cfg.client_id;
         request.body("api_activity", activity?.serialize());
+        console.log(await WebUtils.isFromSameHost(ip));
+        
 
         if (await WebUtils.isFromSameHost(ip)) {
             this.sendErrorMessage(player);
