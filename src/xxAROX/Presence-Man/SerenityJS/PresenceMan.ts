@@ -46,7 +46,9 @@ export default class PresenceMan {
     }
 
     public saveResouce(filename: string, overwrite: boolean = false): boolean{
-        const from = join(__dirname, "../", "../", "../", "resources", filename);
+        const from = join(__dirname, "../../../../", "resources", filename);
+        console.log(from);
+        
         if (!existsSync(from)) return false;
         if (!existsSync(this.getDataFolder(filename)) || overwrite) cpSync(from, this.getDataFolder(filename));
         return existsSync(this.getDataFolder(filename));
