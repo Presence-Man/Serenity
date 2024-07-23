@@ -50,6 +50,8 @@ export class APIRequest {
             let response;
             if (this.postMethod) response = await WebUtils.post(Gateway.getUrl() + this.uri, this._body, this.headers);
             else response = await WebUtils.get(Gateway.getUrl() + this.uri, this.headers);
+            console.log(response);
+            
 
             return response;
         } catch (e) {
