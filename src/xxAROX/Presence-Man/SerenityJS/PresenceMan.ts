@@ -18,23 +18,23 @@ export default class PresenceMan {
     private static _static: PresenceMan;
     public static get static(): PresenceMan{return PresenceMan._static;}
 
-    public readonly plugin: Plugin;
-    public readonly serenity: Serenity;
-    public readonly logger: Logger;
+    //#region Plugin Base code
+    // @ts-ignore
+    private _plugin: Plugin;
+    // @ts-ignore
+    private _serenity: Serenity;
+    // @ts-ignore
+    private _logger: Logger;
     // @ts-ignore -> Its only accessable via getConfig()
     private config: PresenceManConfig;
+    public get plugin(): Plugin{return this._plugin}
+    public get serenity(): Serenity{return this._serenity}
+    public get logger(): Logger{return this._logger}
 
-    //#region Plugin Base code
-    public constructor(serenity: Serenity, plugin: Plugin) {
-        this.plugin = plugin;
-        this.serenity = serenity;
-        this.logger = this.plugin.logger;
+    constructor() {
         if (PresenceMan._static) return;
         PresenceMan._static = this;
-        if (!existsSync(this.getDataFolder())) mkdirSync(this.getDataFolder(), {recursive: true});
-        this.onLoad();
     }
-
     public getDataFolder(...args: string[]): string{
         return join(cwd(), "plugin_data", "Presence-Man", ...args);
     }
@@ -45,10 +45,10 @@ export default class PresenceMan {
         return this.config;
     }
 
-    public async saveResouce(filename: string, overwrite: boolean = false): Promise<boolean>{
+    public saveResouce(filename: string, overwrite: boolean = false): boolean{
         const from = join(__dirname, "../", "../", "../", "resources", filename);
         if (!existsSync(from)) return false;
-        if (!existsSync(this.getDataFolder(filename)) || overwrite) await cpSync(from, this.getDataFolder(filename));
+        if (!existsSync(this.getDataFolder(filename)) || overwrite) cpSync(from, this.getDataFolder(filename));
         return existsSync(this.getDataFolder(filename));
     }
     //#endregion
@@ -56,13 +56,21 @@ export default class PresenceMan {
     public static readonly presences: Map<String, APIActivity> = new Map();
     public static default_activity: APIActivity;
 
-    private async onLoad(): Promise<void>{
-        await this.saveResouce("README.md", true);
-        await this.saveResouce("config.jsonc");
-        await Gateway.fetchGatewayInformation();
+    public async onLoad(serenity: Serenity, plugin: Plugin): Promise<void>{
+        this.logger.info("loading..")
+        this._plugin = plugin;
+        this._serenity = serenity;
+        this._logger = this.plugin.logger;
+        if (!existsSync(this.getDataFolder())) mkdirSync(this.getDataFolder(), {recursive: true});
+
+        this.saveResouce("README.md", true);
+        this.saveResouce("config.jsonc");
+        Gateway.fetchGatewayInformation();
+        this.logger.info("loaded!")
     }
 
     public async onEnable(): Promise<void>{
+        this.logger.info("starting..")
         
         if (this.getConfig().default_presence.enabled) {
             this.serenity.on("PlayerJoined", (event) => {
@@ -81,10 +89,13 @@ export default class PresenceMan {
             this.offline(player)
         });
         UpdateChecker.start();
+        this.logger.info("started!")
     }
 
     public onDisable(): void{
+        this.logger.info("stopping..")
         UpdateChecker.stop();
+        this.logger.info("stopped!")
     }
 
     public getHeadURL(xuid: string, gray: boolean = false, size: number = 64): string{

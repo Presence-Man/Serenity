@@ -1,11 +1,12 @@
 import { Serenity } from "@serenityjs/serenity";
 import { Player } from "@serenityjs/world";
 import { Plugin } from "@serenityjs/plugins";
-import PresenceMan from "./src/xxAROX/Presence-Man/SerenityJS/PresenceMan";
 import { APIActivity, DefaultActivities } from "./src/xxAROX/Presence-Man/SerenityJS/entity/APIActivity";
 import { ActivityType } from "./src/xxAROX/Presence-Man/SerenityJS/entity/ActivityType";
+import PresenceMan from "./src/xxAROX/Presence-Man/SerenityJS/PresenceMan";
 
-export function onInitialize(serenity: Serenity, plugin: Plugin) {new PresenceMan(serenity, plugin);}
+new PresenceMan();
+export function onInitialize(serenity: Serenity, plugin: Plugin) {PresenceMan.static.onLoad(serenity, plugin);}
 export function onStartup() {PresenceMan.static.onEnable();}
 export function onShutdown() {PresenceMan.static.onDisable();}
 
