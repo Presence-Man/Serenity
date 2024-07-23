@@ -3,25 +3,25 @@ import { Gateway } from "./Gateway";
 import PresenceMan from "../PresenceMan";
 
 export class APIRequest {
-    public static readonly URI_UPDATE_SKIN = "/api/v1/images/skins/update";
-    public static readonly URI_UPDATE_PRESENCE = "/api/v1/servers/update_presence";
-    public static readonly URI_UPDATE_OFFLINE = "/api/v1/servers/offline";
-    public static readonly URI_GET_SKIN = "/api/v1/images/skins/";
-    public static readonly URI_GET_HEAD = "/api/v1/images/heads/";
-    public static readonly URI_TEST = "/api/v1/test";
+    public static readonly URI_UPDATE_SKIN      = "/api/v1/images/skins/update";
+    public static readonly URI_UPDATE_PRESENCE  = "/api/v1/servers/update_presence";
+    public static readonly URI_UPDATE_OFFLINE   = "/api/v1/servers/offline";
+    public static readonly URI_GET_SKIN         = "/api/v1/images/skins/";
+    public static readonly URI_GET_HEAD         = "/api/v1/images/heads/";
+    public static readonly URI_TEST             = "/api/v1/test";
 
     private _headers: {[key: string]: string} = {};
-    private _body: {[key: string]: string} = {};
+    private _body: Body = {};
     private postMethod: boolean;
     private uri: string;
 
-    constructor(uri: string, body: {[key: string]: string}, postMethod: boolean) {
+    constructor(uri: string, body: {[key: string]: null|string}, postMethod: boolean) {
         this.header("Content-Type", "application/json");
         this.uri = uri;
         this._body = body;
         this.postMethod = postMethod;
-        this.header("Serversoftware", "BDSX");
-        this.header("User-Agent", "Presence-Man BDSX client/"+PresenceMan.static.plugin.config.version)
+        this.header("Serversoftware", "Serenity");
+        this.header("User-Agent", "Presence-Man Serenity client/"+PresenceMan.static.plugin.config.version)
     }
 
     getUri(): string{
@@ -37,7 +37,7 @@ export class APIRequest {
         return this._headers;
     }
 
-    body(key: string, value: string): APIRequest{
+    body(key: string, value: BodyValue): APIRequest{
         this._body[key] = value;
         return this;
     }
@@ -51,9 +51,6 @@ export class APIRequest {
             let response;
             if (this.postMethod) response = await WebUtils.post(Gateway.getUrl() + this.uri, this._body, this.headers);
             else response = await WebUtils.get(Gateway.getUrl() + this.uri, this.headers);
-            console.log(response);
-            
-
             return response;
         } catch (e) {
             PresenceMan.static.logger.error("Error while API request: ", e);
@@ -68,3 +65,5 @@ export class APIRequest {
         }
     }
 }
+type BodyValue = null|string;
+type Body = {[key: string]: BodyValue};

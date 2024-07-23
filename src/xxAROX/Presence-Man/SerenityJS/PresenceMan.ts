@@ -1,8 +1,9 @@
+//#region Imports:
 import { Plugin } from "@serenityjs/plugins";
 import { Player } from "@serenityjs/world";
 import { Logger } from "@serenityjs/logger";
 import { Packet,SerializedSkin } from "@serenityjs/protocol";
-
+import { Serenity } from "@serenityjs/serenity";
 import * as JSON5 from "json5";
 import { cpSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -12,13 +13,13 @@ import { APIActivity, DefaultActivities } from "./entity/APIActivity";
 import { UpdateChecker } from "./tasks/UpdateChecker";
 import { APIRequest } from "./entity/APIRequest";
 import { SkinUtils, WebUtils } from "./utils";
-import { Serenity } from "@serenityjs/serenity";
+//#endregion
 
 export default class PresenceMan {
     private static _static: PresenceMan;
     public static get static(): PresenceMan{return PresenceMan._static;}
 
-    //#region Plugin Base code
+    //#region PluginBase:
     // @ts-ignore
     private _plugin: Plugin;
     // @ts-ignore
@@ -53,6 +54,7 @@ export default class PresenceMan {
     }
     //#endregion
 
+    //#region Plugin mechanic:
     public static readonly presences: Map<String, APIActivity> = new Map();
     public static default_activity: APIActivity;
 
@@ -85,12 +87,17 @@ export default class PresenceMan {
             this.offline(player)
         });
         UpdateChecker.start();
+
+        console.log(this.serenity.plugins.entries.keys);
+        
     }
 
     public onDisable(): void{
         UpdateChecker.stop();
     }
+    //#endregion
 
+    //#region API functions:
     public getHeadURL(xuid: string, gray: boolean = false, size: number = 64): string{
         size = !size ? Math.min(512, Math.max(16, size)) : 64;
         let url = APIRequest.URI_GET_HEAD + xuid;
@@ -103,7 +110,7 @@ export default class PresenceMan {
         return Gateway.getUrl() + APIRequest.URI_GET_SKIN + xuid + (gray ? "?gray" : "");
     }
 
-    public async setActivity(player: Player, activity: null|APIActivity): Promise<void>{
+    public async clearActivity(player: Player): Promise<void>{
         const xuid = player.xuid;
         const ip = await WebUtils.getSafeIp(player.session.connection.rinfo.address);
         const gamertag = player.username;
@@ -115,18 +122,36 @@ export default class PresenceMan {
         request.body("ip", ip);
         request.body("xuid", xuid);
         request.body("server", cfg.server);
-        activity!.client_id = cfg.client_id;
-        request.body("api_activity", activity?.serialize());
-        console.log(await WebUtils.isFromSameHost(ip));
-        
+        request.body("api_activity", null);
 
         if (await WebUtils.isFromSameHost(ip)) {
             this.sendErrorMessage(player);
             return;
         }
         const response = await request.request();
-        console.log(response.body);
-        
+        if (response.code === 200) PresenceMan.presences.delete(xuid);
+        else PresenceMan.static.logger.warn(`Failed to clear presence for ${gamertag}: ${JSON.parse(response.body).message}`);
+    }
+    public async setActivity(player: Player, activity: APIActivity): Promise<void>{
+        const xuid = player.xuid;
+        const ip = await WebUtils.getSafeIp(player.session.connection.rinfo.address);
+        const gamertag = player.username;
+
+        const cfg = this.getConfig();
+        const request = new APIRequest(APIRequest.URI_TEST, {}, true);
+        request.header("Token", cfg.token);
+
+        request.body("ip", ip);
+        request.body("xuid", xuid);
+        request.body("server", cfg.server);
+        if (activity && !activity.client_id) activity.client_id = cfg.client_id;
+        request.body("api_activity", activity?.serialize());
+
+        if (await WebUtils.isFromSameHost(ip)) {
+            this.sendErrorMessage(player);
+            return;
+        }
+        const response = await request.request();
         if (response.code === 200) {
             if (!activity) PresenceMan.presences.delete(xuid);
             else PresenceMan.presences.set(player.xuid, activity);
@@ -182,10 +207,13 @@ export default class PresenceMan {
         await request.request();
         PresenceMan.presences.delete(xuid);
     }
+    //#endregion
 
+    //#region  Other functions:
     private sendErrorMessage(player: Player): void{
         player.sendMessage("§l§c»§r §7Presence-Man wouldn't work on a local server!")
     }
+    //#endregion
 }
 interface PresenceManConfig {
     token: string
