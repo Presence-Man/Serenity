@@ -32,19 +32,20 @@ export default class PresenceMan {
         if (PresenceMan._static) return;
         PresenceMan._static = this;
         console.log(
-            "getDataFolder(): " + this.getDataFolder(),
-            "package.json:    " + join(__dirname, "../", "../", "../", "package.json"),
+            "cwd():           " + cwd() + "\n"+
+            "getDataFolder(): " + this.getDataFolder() + "\n"+
+            "package.json:    " + join(__dirname, "../../../../", "package.json"),
         );
         //if (!existsSync(this.getDataFolder())) mkdirSync(this.getDataFolder(), {recursive: true});
         //this.onLoad();
     }
 
     public getPKG(): any{
-        return JSON.parse(readFileSync(join(__dirname, "../", "../", "../", "package.json")).toString());
+        return JSON.parse(readFileSync(join(__dirname, "../../../../", "package.json")).toString());
     }
 
     public getDataFolder(...args: string[]): string{
-        return join(cwd(), "..", "plugin_data", "Presence-Man", ...args);
+        return join(cwd(), "plugin_data", "Presence-Man", ...args);
     }
 
     public getConfig(reload: boolean = false): PresenceManConfig{
