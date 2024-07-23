@@ -3,7 +3,7 @@ import { Gateway } from "./Gateway";
 import PresenceMan from "../PresenceMan";
 
 export class APIRequest {
-    public static readonly URI_UPDATE_SKIN      = "/api/v1/images/skins/update";
+    public static readonly URI_UPDATE_SKIN      = "/api/v1/servers/update_skin";
     public static readonly URI_UPDATE_PRESENCE  = "/api/v1/servers/update_presence";
     public static readonly URI_UPDATE_OFFLINE   = "/api/v1/servers/offline";
     public static readonly URI_GET_SKIN         = "/api/v1/images/skins/";
