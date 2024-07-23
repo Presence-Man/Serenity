@@ -104,7 +104,6 @@ export default class PresenceMan {
     }
 
     public async setActivity(player: Player, activity: null|APIActivity): Promise<void>{
-        if (!(player instanceof Player)) return;
         const xuid = player.xuid;
         const ip = await WebUtils.getSafeIp(player.session.connection.rinfo.address);
         const gamertag = player.username;
@@ -139,7 +138,6 @@ export default class PresenceMan {
      * @internal
      */
     public async offline(player: Player): Promise<void>{
-        if (!(player instanceof Player)) return;
         const xuid = player.xuid;
         const ip = await WebUtils.getSafeIp(player.session.connection.rinfo.address);
 
@@ -162,7 +160,6 @@ export default class PresenceMan {
      * @internal
      */
     public async saveSkin(player: Player, skin?: SerializedSkin) {
-        if (!(player instanceof Player)) return;
         if (!skin) skin = player.skin;
         const xuid = player.xuid;
         const ip = await WebUtils.getSafeIp(player.session.connection.rinfo.address);
