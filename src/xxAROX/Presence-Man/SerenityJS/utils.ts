@@ -3,6 +3,7 @@ import { lookup } from 'node:dns';
 import * as https from "node:https";
 import * as http from "node:http";
 import sharp = require('sharp');
+import PresenceMan from "./PresenceMan";
 
 export namespace WebUtils {
 	export interface Response {
@@ -77,14 +78,17 @@ export namespace WebUtils {
 		});
 	}
 
-	export function isFromSameHost(ip: string): Promise<boolean> {
-		return new Promise((resolve) => {
+	async function isInternalIp(ip: string): Promise<boolean>{
+		return new Promise((resolve, reject) => {
 			lookup(ip, { all: true, family: "IPv4" }, (err, addresses) => {
 				if (err) {
-					resolve(false);
+					reject(err);
 					return;
 				}
-				if (!addresses[0]) return;
+				if (!addresses[0]) {
+					reject(new Error("addresses can't be empty"));
+					return;
+				}
 				const ip = addresses[0].address;
 				var parts = ip.split('.');
 				const isLocalAddress = parts[0] === "127"
@@ -97,6 +101,44 @@ export namespace WebUtils {
 				resolve(isLocalAddress);
 			});
 		});
+	}
+
+	export function isFromSameHost(ip: string): Promise<boolean> {
+		return isInternalIp(ip);
+	}
+
+	/** @internal */
+	export let IP_ADDRESS: string;
+	export async function getSafeIp(ip: string): Promise<string> {
+		async function fetchRealIp(): Promise<string>{
+			let ip;
+			try {
+				ip = (await (await fetch("http://api.ipify.org/")).text()).trim();
+				if (typeof ip === "string" && ip !== "") return ip;
+			} catch (e) {
+			}
+			try {
+				const regex = /Current IP Address\: ([0-9a-fA-F\:\.]*)/;
+				ip = regex.exec((await (await fetch("http://checkip.dyndns.org/")).text()).trim())?.[1];
+				if (typeof ip === "string" && ip !== "") return ip;
+			} catch (e) {
+			}
+			try {
+				ip = (await (await fetch("http://ifconfig.me/ip")).text()).trim();
+				if (typeof ip === "string" && ip !== "") return ip;
+			} catch (e) {
+			}
+			throw "No IP-Address found!";
+		}
+		try {
+			const local = await isInternalIp(ip);
+			if (local) {
+				if (!WebUtils.IP_ADDRESS) WebUtils.IP_ADDRESS = await fetchRealIp();
+				return WebUtils.IP_ADDRESS;
+			} else return ip;
+		} catch (e) {
+			throw e;
+		}
 	}
 }
 

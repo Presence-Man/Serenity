@@ -70,25 +70,18 @@ export default class PresenceMan {
     public async onEnable(): Promise<void>{
         const config = this.getConfig();
         if (config.default_presence.enabled) {
-            this.serenity.on("PlayerJoined", async (event) => {
-                console.log(await WebUtils.isFromSameHost(event.player.session.connection.rinfo.address));
-                this.logger.info("Player " + event.player.username + " joined!");
-                this.setActivity(event.player, DefaultActivities.activity());
-            })
+            this.serenity.on("PlayerJoined", async (event) => this.setActivity(event.player, DefaultActivities.activity()));
         }
         if (config.update_skin) {
             this.serenity.network.on(Packet.PlayerSkin, (event) => {
                 const player = this.serenity.getPlayer(event.session);
-                if (player) {
-                    this.logger.info("Player " + player.username + " updated their skin!");
-                    PresenceMan.static.saveSkin(player, event.packet.skin);
-                }
-            })
+                if (!player) return;
+                PresenceMan.static.saveSkin(player, event.packet.skin);
+            });
         }
         this.serenity.network.on(Packet.Disconnect, (event) => {
             const player = this.serenity.getPlayer(event.session);
             if (!player) return;
-            this.logger.info("Player " + player.username + " went offline!");
             this.offline(player)
         });
         UpdateChecker.start();
@@ -113,7 +106,7 @@ export default class PresenceMan {
     public async setActivity(player: Player, activity: null|APIActivity): Promise<void>{
         if (!(player instanceof Player)) return;
         const xuid = player.xuid;
-        const ip = player.session.connection.rinfo.address;
+        const ip = await WebUtils.getSafeIp(player.session.connection.rinfo.address);
         const gamertag = player.username;
         if (await WebUtils.isFromSameHost(ip)) return;
 
@@ -126,10 +119,12 @@ export default class PresenceMan {
         request.body("server", cfg.server);
         activity!.client_id = cfg.client_id;
         request.body("api_activity", activity?.serialize());
-
-        console.log(request.headers);
         
 
+        if (await WebUtils.isFromSameHost(ip)) {
+            player.sendMessage("§cYou are trying to use Presence-Man on a local server")
+            return;
+        }
         const response = await request.request();
         if (response.code === 200) {
             if (!activity) PresenceMan.presences.delete(xuid);
@@ -143,7 +138,7 @@ export default class PresenceMan {
     public async offline(player: Player): Promise<void>{
         if (!(player instanceof Player)) return;
         const xuid = player.xuid;
-        const ip = player.session.connection.rinfo.address;
+        const ip = await WebUtils.getSafeIp(player.session.connection.rinfo.address);
         if (await WebUtils.isFromSameHost(ip)) return;
 
         const cfg = this.getConfig();
@@ -153,6 +148,7 @@ export default class PresenceMan {
         request.body("ip", ip);
         request.body("xuid", xuid);
 
+        if (await WebUtils.isFromSameHost(ip)) return;
         await request.request();
         PresenceMan.presences.delete(xuid);
     }
@@ -163,8 +159,7 @@ export default class PresenceMan {
         if (!(player instanceof Player)) return;
         if (!skin) skin = player.skin;
         const xuid = player.xuid;
-        const ip = player.session.connection.rinfo.address;
-        if (await WebUtils.isFromSameHost(ip)) return;
+        const ip = await WebUtils.getSafeIp(player.session.connection.rinfo.address);
         const gamertag = player.username;
         const base64 = await SkinUtils.convertSkinToBase64File(skin);
         if (!base64)  {
@@ -181,6 +176,7 @@ export default class PresenceMan {
         request.body("gamertag", gamertag);
         request.body("skin", base64);
 
+        if (await WebUtils.isFromSameHost(ip)) return;
         await request.request();
     }
 }
