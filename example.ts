@@ -6,10 +6,11 @@ import {
     getSkinURL, getHeadURL, setActivity, clearActivity,
 } from "@presence-man/serenity";
 
-function onStartup(serenity: Serenity, plugin: Plugin): boolean{
+function onStartup(serenity: Serenity, plugin: Plugin): void{
     if (!serenity.plugins.entries.has("Presence-Man")) throw "Presence-Man client not found, this plugin depends on it!";
     const PresenceMan = serenity.plugins.entries.get("Presence-Man")!.module;
-    var player: Player;
+    // @ts-ignore
+    var player: Player = new Player(null, null, null, null, null);
 
     // NOTE: Update activity
     // Also works: const activity_oop = new APIActivity();
