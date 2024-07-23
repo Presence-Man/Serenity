@@ -20,7 +20,7 @@ export class APIRequest {
         this._body = body;
         this.postMethod = postMethod;
         this.header("Serversoftware", "BDSX");
-        this.header("User-Agent", "Presence-Man BDSX client/"+PresenceMan.static.getPKG().version)
+        this.header("User-Agent", "Presence-Man BDSX client/"+PresenceMan.static.plugin.config.version)
     }
 
     getUri(): string{
