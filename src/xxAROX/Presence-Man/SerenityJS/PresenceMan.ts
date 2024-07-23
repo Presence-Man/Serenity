@@ -108,7 +108,6 @@ export default class PresenceMan {
         const xuid = player.xuid;
         const ip = await WebUtils.getSafeIp(player.session.connection.rinfo.address);
         const gamertag = player.username;
-        if (await WebUtils.isFromSameHost(ip)) return;
 
         const cfg = this.getConfig();
         const request = new APIRequest(APIRequest.URI_UPDATE_PRESENCE, {}, true);
